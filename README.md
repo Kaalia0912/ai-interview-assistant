@@ -9,7 +9,7 @@
 1. 安装 Python 3.11+，准备两个 API key：DeepSeek（生成回答）、硅基流动（向量 + 重排，有免费额度）
 2. 进入 `rag-assistant/`，复制 `.env.example` 为 `.env` 并填入 key
 3. `pip install -r requirements.txt`
-4. 把面经文档放进 `data/mianjing/`（没有语料可用 `examples/` 示例），运行 `python scripts/ingest_cli.py data/mianjing` 入库（生语料会自动清洗整理）
+4. 入库：有语料就先放进 `data/mianjing/`，再运行 `python scripts/ingest_cli.py data/mianjing`；没有语料可直接运行 `python scripts/ingest_cli.py examples` 体验（生语料会自动清洗整理）
 5. 启动 `python -m uvicorn app.main:app --reload`，浏览器打开 `http://127.0.0.1:8000`
 
 完整安装与使用说明见 [rag-assistant/README.md](rag-assistant/README.md)。

@@ -83,10 +83,14 @@ def ingest_file(path: Path, auto_structure: bool = True) -> dict:
 
 
 def ingest_dir(dir_path: Path, auto_structure: bool = True) -> dict:
-    """批量入库目录（含子目录）下所有支持的文档。"""
+    """批量入库目录（含子目录）下所有支持的文档；README.md 视为说明文件自动跳过。"""
     results = []
     for p in sorted(dir_path.rglob("*")):
-        if p.is_file() and p.suffix.lower() in SUPPORTED:
+        if (
+            p.is_file()
+            and p.suffix.lower() in SUPPORTED
+            and p.name.lower() != "readme.md"
+        ):
             results.append(ingest_file(p, auto_structure=auto_structure))
     return {
         "total": len(results),

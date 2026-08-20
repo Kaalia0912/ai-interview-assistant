@@ -58,8 +58,8 @@ flowchart LR
    - `DEEPSEEK_API_KEY`：DeepSeek 生成密钥
    - `EMBED_API_KEY`：向量密钥（硅基流动 bge-m3 免费，或通义 DashScope，见 `.env.example` 内注释）
 3. 安装依赖：`pip install -r requirements.txt`
-4. 放入语料：把面经文档放进 `data/mianjing/`（没有语料可用 `examples/` 示例体验，见 [examples/README.md](examples/README.md)）
-5. 入库：`python scripts/ingest_cli.py data/mianjing`
+4. 放入语料：把面经文档放进 `data/mianjing/`（可建子目录）；没有自己的语料可跳过本步
+5. 入库：有语料运行 `python scripts/ingest_cli.py data/mianjing`；没有语料可直接体验示例 `python scripts/ingest_cli.py examples`
 6. 启动：`python -m uvicorn app.main:app --reload`，浏览器打开 `http://127.0.0.1:8000`（本机地址，需在浏览器地址栏手动输入）
 
 Windows 也可直接双击 `start.bat` 一键启动。

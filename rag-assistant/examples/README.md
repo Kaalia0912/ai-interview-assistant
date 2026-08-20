@@ -17,4 +17,6 @@ python scripts/ingest_cli.py data\mianjing
 python scripts/ingest_cli.py examples
 ```
 
+> 本目录的说明文件 README.md 会被入库命令自动跳过，只入库 4 份面经合集。
+
 > 真实语料（`data/`）不随仓库分发，请按 `docs/语料搜集与添加指南.md` 自行准备。

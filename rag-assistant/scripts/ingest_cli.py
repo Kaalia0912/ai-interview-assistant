@@ -20,6 +20,10 @@ def main():
         print("已清空知识库与去重索引，重新入库")
 
     path = Path(target).resolve()
+    if not path.exists():
+        print(f"路径不存在：{path}")
+        print("提示：有语料请放进 data/mianjing/ 再入库；没有语料可先用示例体验：python scripts/ingest_cli.py examples")
+        return
     if path.is_file():
         result = ingester.ingest_file(path, auto_structure=not no_structure)
         mark = "（重复，已跳过）" if result.get("skipped") else ""
@@ -27,6 +31,9 @@ def main():
         print(f"{result['file']}: {result['chunks']} 块{struct_mark}{mark}")
     else:
         result = ingester.ingest_dir(path, auto_structure=not no_structure)
+        if result["total"] == 0:
+            print("提示：目录里没有可入库的文档（README.md 说明文件会自动跳过）。")
+            print("有语料请先放进该目录；没有语料可体验示例：python scripts/ingest_cli.py examples")
         skip_note = f"，跳过重复 {result['skipped']} 个" if result["skipped"] else ""
         print(f"入库完成：共 {result['total']} 个文件，{result['total_chunks']} 个块{skip_note}")
         for r in result["files"]:

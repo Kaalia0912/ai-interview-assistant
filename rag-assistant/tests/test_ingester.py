@@ -48,3 +48,19 @@ def test_ingest_dedup(tmp_path, monkeypatch):
     ingester.reset_index()
     r3 = ingester.ingest_file(p)
     assert r3["skipped"] is False
+
+
+def test_ingest_dir_skips_readme(tmp_path, monkeypatch):
+    data_dir = tmp_path / "data" / "mianjing"
+    data_dir.mkdir(parents=True)
+    (data_dir / "a.md").write_text("# 标题\n\n内容", encoding="utf-8")
+    (data_dir / "README.md").write_text("这是说明文档", encoding="utf-8")
+    monkeypatch.setattr(ingester.config, "DATA_DIR", data_dir)
+    monkeypatch.setattr(ingester, "_index_path", lambda: tmp_path / "indexed_files.json")
+    monkeypatch.setattr(ingester.structurer, "structure_text", lambda text, source: None)
+    monkeypatch.setattr(
+        ingester.vector_store, "add_chunks", lambda chunks, sources: None
+    )
+    result = ingester.ingest_dir(data_dir)
+    assert result["total"] == 1
+    assert result["files"][0]["file"] == "a.md"
