@@ -60,7 +60,7 @@ flowchart LR
 3. 安装依赖：`pip install -r requirements.txt`
 4. 放入语料：把面经文档放进 `data/mianjing/`（没有语料可用 `examples/` 示例体验，见 [examples/README.md](examples/README.md)）
 5. 入库：`python scripts/ingest_cli.py data/mianjing`
-6. 启动：`python -m uvicorn app.main:app --reload`，浏览器打开 http://127.0.0.1:8000
+6. 启动：`python -m uvicorn app.main:app --reload`，浏览器打开 `http://127.0.0.1:8000`（本机地址，需在浏览器地址栏手动输入）
 
 Windows 也可直接双击 `start.bat` 一键启动。
 
@@ -72,7 +72,7 @@ Windows 也可直接双击 `start.bat` 一键启动。
 docker compose up -d --build
 ```
 
-浏览器打开 http://127.0.0.1:8000。`./data`（含向量库）通过 volume 持久化；容器内重新入库：
+浏览器打开 `http://127.0.0.1:8000`。`./data`（含向量库）通过 volume 持久化；容器内重新入库：
 
 ```bash
 docker compose exec rag-assistant python scripts/ingest_cli.py --reset data/mianjing
@@ -107,7 +107,10 @@ docker compose exec rag-assistant python scripts/ingest_cli.py --reset data/mian
 
 优化历程：纯向量检索版 24/30 合格 → 加入「按标题分块 + bge-reranker 重排 + 项目复盘语料」后 30/30 命中并带引用。
 
-复现：`python tests/run_eval.py` 自动生成 `tests/eval_report.md`，明细见 `tests/eval_results.jsonl`。
+> 说明：30/30 是基于本地完整语料（`data/` 不随仓库分发）与 DeepSeek / 硅基流动 key 的实测成绩。
+> 复现步骤：先按「快速开始」填好 `.env` 并入库（没有自己的语料可用 `examples/` 示例体验），再运行
+> `python tests/run_eval.py`，自动生成 `tests/eval_report.md`，明细见 `tests/eval_results.jsonl`。
+> 用示例语料可以跑通整个评估流程，但检索命中数会因语料内容和数量而异，不会等于 30/30。
 
 ## 测试
 
