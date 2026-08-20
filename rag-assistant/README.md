@@ -29,6 +29,8 @@
 
 也可双击 `start.bat` 一键启动（本地 Python 环境）。
 
+完整流程与使用说明见 [docs/使用手册.md](docs/使用手册.md)。
+
 ## Docker 部署
 
 ```bash
