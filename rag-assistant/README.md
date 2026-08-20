@@ -89,7 +89,6 @@ docker compose exec rag-assistant python scripts/ingest_cli.py --reset data/mian
 - [x] 缓存：相同问题 1 小时命中，省 token 降延迟
 - [x] 日志：问题、耗时、token 用量
 - [x] 友好错误提示：key 失效 / 限流 / 超时
-- [ ] 公网部署（待配置服务器）
 
 ## 评估结果（30/30 · 2026-08-19）
 
