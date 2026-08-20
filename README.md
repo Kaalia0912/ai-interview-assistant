@@ -1,12 +1,12 @@
-# AI 应用工程师学习项目
+# AI 面试经验助手（RAG）
 
-> 对应《AI 应用工程师学习计划》（22 周），边做项目边补知识。
+基于检索增强生成（RAG）的 AI 面试经验问答系统：把面经、题库、项目复盘与官方文档整理成知识库，提问时检索相关资料并带引用作答。
 
 ## 目录结构
 
-- `rag-assistant/` —— RAG 核心项目：AI 面试经验问答助手（面经 / 题库 / 复盘知识库，FastAPI + Chroma + bge-reranker，30 题评估全过，Docker 部署）。完整说明见 [rag-assistant/README.md](rag-assistant/README.md)。
+- `rag-assistant/` —— 主项目（FastAPI + Chroma + bge-m3 + DeepSeek），完整说明见 [rag-assistant/README.md](rag-assistant/README.md)。
 
 ## 当前状态
 
-- 核心项目已完成并提交，本地 Docker 已跑通
-- 进行中：推送 GitHub、云服务器上线、演示视频
+- 核心功能完成：30 题评估 30/30、12 项自动化测试通过、Docker 部署文件就绪
+- 已推送 GitHub；公网部署待配置
