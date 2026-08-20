@@ -3,71 +3,377 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI 应用工程师面经助手</title>
+  <title>AI 面试经验助手</title>
   <style>
-    body { font-family: system-ui, "Microsoft YaHei", sans-serif; max-width: 860px; margin: 0 auto; padding: 24px; background: #f7f8fa; }
-    h1 { font-size: 20px; }
-    .box { background: #fff; border-radius: 10px; padding: 16px; margin-top: 16px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
-    textarea { width: 100%; min-height: 80px; border: 1px solid #ddd; border-radius: 8px; padding: 10px; font-size: 14px; box-sizing: border-box; }
-    button { margin-top: 10px; padding: 8px 18px; border: none; border-radius: 8px; background: #2e6be6; color: #fff; cursor: pointer; font-size: 14px; }
-    .sources { font-size: 13px; color: #555; border-top: 1px dashed #ddd; margin-top: 12px; padding-top: 10px; }
-    .source { margin: 6px 0; }
-    .cited { color: #2e7d32; }
-    .uncited { color: #999; }
-    .upload { font-size: 13px; color: #888; }
-    #answer { white-space: pre-wrap; line-height: 1.7; }
+    :root {
+      --primary: #2563eb; --primary-dark: #1d4ed8; --primary-soft: #eff6ff;
+      --bg: #f1f5f9; --card: #ffffff; --line: #e2e8f0;
+      --text: #0f172a; --muted: #64748b;
+      --ok: #16a34a; --ok-bg: #f0fdf4; --err: #dc2626; --err-bg: #fef2f2;
+      --radius-lg: 16px; --radius-md: 12px; --radius-sm: 8px;
+      --shadow-sm: 0 1px 2px rgba(15,23,42,.05);
+      --shadow-md: 0 4px 16px rgba(15,23,42,.07);
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body { margin: 0; font-family: "Segoe UI", "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+           background: var(--bg); color: var(--text); font-size: 15px; line-height: 1.65; }
+    button, textarea { font-family: inherit; }
+    button { cursor: pointer; }
+
+    .app { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px;
+           max-width: 1180px; height: 100vh; margin: 0 auto; padding: 16px; }
+
+    .main { display: flex; flex-direction: column; min-width: 0;
+            background: var(--card); border: 1px solid var(--line);
+            border-radius: var(--radius-lg); box-shadow: var(--shadow-md);
+            overflow: hidden; }
+    header { display: flex; align-items: center; gap: 12px; padding: 14px 20px;
+             border-bottom: 1px solid var(--line); background: #fff; }
+    .logo { width: 34px; height: 34px; border-radius: 10px; flex-shrink: 0;
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
+            display: grid; place-items: center; color: #fff; }
+    .logo svg { width: 18px; height: 18px; }
+    .head-text { min-width: 0; }
+    .head-text h1 { margin: 0; font-size: 16px; font-weight: 650; letter-spacing: .2px; }
+    .head-text p { margin: 0; font-size: 12px; color: var(--muted); }
+    .status-pill { margin-left: auto; display: inline-flex; align-items: center; gap: 6px;
+                   padding: 5px 11px; border-radius: 999px; font-size: 12px;
+                   background: var(--primary-soft); color: var(--primary); white-space: nowrap; }
+    .status-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); }
+
+    #chat { flex: 1; overflow-y: auto; padding: 20px; display: flex;
+            flex-direction: column; gap: 6px; background: #fbfcfe; }
+    .welcome { background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md);
+               padding: 18px; margin-bottom: 6px; }
+    .welcome h2 { margin: 0 0 6px; font-size: 16px; }
+    .welcome p { margin: 0 0 14px; color: var(--muted); font-size: 13.5px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .chip { border: 1px solid var(--line); background: #fff; color: var(--text);
+            padding: 7px 12px; border-radius: 999px; font-size: 13px;
+            transition: all 150ms ease-out; }
+    .chip:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+    .chip:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+    .msg { max-width: 82%; padding: 11px 15px; border-radius: 14px;
+           line-height: 1.7; font-size: 14.5px; white-space: pre-wrap; word-break: break-word;
+           animation: msg-in 200ms ease-out; }
+    @keyframes msg-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+    .msg.user { align-self: flex-end; background: var(--primary); color: #fff;
+                border-bottom-right-radius: 5px; }
+    .msg.assistant { align-self: flex-start; background: #fff; border: 1px solid var(--line);
+                     border-bottom-left-radius: 5px; box-shadow: var(--shadow-sm); }
+    .msg.error { align-self: flex-start; background: var(--err-bg); color: var(--err);
+                 border: 1px solid #fecaca; }
+    .thinking { display: inline-flex; gap: 5px; align-items: center; padding: 4px 2px; }
+    .thinking i { width: 6px; height: 6px; border-radius: 50%; background: var(--muted);
+                  animation: blink 1.2s infinite ease-in-out; }
+    .thinking i:nth-child(2) { animation-delay: .18s; }
+    .thinking i:nth-child(3) { animation-delay: .36s; }
+    @keyframes blink { 0%, 80%, 100% { opacity: .25; } 40% { opacity: 1; } }
+
+    .sources { align-self: flex-start; width: min(82%, 640px); margin: -2px 0 10px;
+               background: #fff; border: 1px solid var(--line); border-radius: var(--radius-md);
+               padding: 10px 14px; font-size: 12.5px; }
+    .sources summary { cursor: pointer; color: var(--muted); font-weight: 600;
+                       user-select: none; }
+    .src { display: flex; align-items: baseline; gap: 8px; margin-top: 8px;
+           padding: 7px 9px; border-radius: 8px; background: #f8fafc; }
+    .src b { flex-shrink: 0; }
+    .src.cited { color: var(--ok); }
+    .src.uncited { color: var(--muted); }
+    .src .name { color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .src .meta { margin-left: auto; flex-shrink: 0; }
+
+    .inputbar { display: flex; gap: 10px; align-items: flex-end; padding: 14px 16px;
+                border-top: 1px solid var(--line); background: #fff; }
+    .input-wrap { flex: 1; position: relative; }
+    textarea { width: 100%; resize: none; min-height: 46px; max-height: 130px;
+               border: 1px solid var(--line); border-radius: var(--radius-md);
+               padding: 11px 12px 22px; font-size: 14.5px; color: var(--text);
+               outline: none; transition: border-color 150ms ease-out, box-shadow 150ms ease-out; }
+    textarea:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
+    .input-hint { position: absolute; left: 13px; bottom: 7px; font-size: 11px; color: #94a3b8; }
+    .send { display: inline-flex; align-items: center; gap: 7px; height: 46px; padding: 0 18px;
+            border: none; border-radius: var(--radius-md); background: var(--primary); color: #fff;
+            font-size: 14px; font-weight: 600; transition: background 150ms ease-out, transform 100ms ease-out; }
+    .send:hover { background: var(--primary-dark); }
+    .send:active { transform: scale(.97); }
+    .send:disabled { opacity: .55; cursor: not-allowed; }
+    .send:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .send svg { width: 15px; height: 15px; }
+    .ghost { height: 46px; padding: 0 14px; border: 1px solid var(--line); border-radius: var(--radius-md);
+             background: #fff; color: var(--muted); font-size: 14px;
+             transition: all 150ms ease-out; }
+    .ghost:hover { border-color: #cbd5e1; color: var(--text); }
+
+    .side { display: flex; flex-direction: column; gap: 16px; overflow-y: auto; }
+    .card { background: var(--card); border: 1px solid var(--line);
+            border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); padding: 16px; }
+    .card h3 { margin: 0 0 4px; font-size: 14px; font-weight: 650; }
+    .card .hint { margin: 0 0 12px; font-size: 12px; color: var(--muted); }
+    .upload-box { border: 1.5px dashed #cbd5e1; border-radius: var(--radius-md);
+                  padding: 14px; text-align: center; font-size: 12.5px; color: var(--muted);
+                  transition: all 150ms ease-out; }
+    .upload-box:hover { border-color: var(--primary); background: var(--primary-soft); color: var(--primary); }
+    .upload-box input { display: block; margin: 8px auto 0; font-size: 12px; max-width: 100%; }
+    #docList { margin-top: 4px; }
+    .docrow { display: flex; align-items: center; gap: 8px; padding: 7px 6px;
+              border-radius: 8px; font-size: 13px; transition: background 150ms ease-out; }
+    .docrow:hover { background: #f8fafc; }
+    .docrow .name { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis;
+                    white-space: nowrap; }
+    .badge { flex-shrink: 0; font-size: 11px; color: var(--muted); background: #f1f5f9;
+             border-radius: 999px; padding: 2px 8px; }
+    .docrow .del { flex-shrink: 0; border: none; background: none; color: #94a3b8;
+                   font-size: 12px; padding: 4px 6px; border-radius: 6px;
+                   transition: all 150ms ease-out; }
+    .docrow .del:hover { color: var(--err); background: var(--err-bg); }
+    .docrow .del:focus-visible { outline: 2px solid var(--err); outline-offset: 1px; }
+    .empty { color: var(--muted); font-size: 12.5px; padding: 8px 2px; }
+
+    :focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+    @media (max-width: 920px) {
+      .app { grid-template-columns: 1fr; height: auto; }
+      .main { height: calc(100vh - 280px); }
+      .side { overflow: visible; }
+      .msg, .sources { max-width: 94%; }
+    }
   </style>
 </head>
 <body>
-  <h1>AI 应用工程师面经助手</h1>
+  <div class="app">
+    <section class="main" aria-label="问答">
+      <header>
+        <div class="logo" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 3v3m0 12v3m9-9h-3M6 12H3m14.5-5.5-2 2m-7 7-2 2m0-9 2 2m7 7 2 2"/>
+            <circle cx="12" cy="12" r="3.5"/>
+          </svg>
+        </div>
+        <div class="head-text">
+          <h1>AI 面试经验助手</h1>
+          <p>AI 应用工程师 · 基于知识库检索回答</p>
+        </div>
+        <span class="status-pill"><span class="dot"></span><span id="status">加载中</span></span>
+      </header>
 
-  <div class="box">
-    <div class="upload">上传面经（md / txt / pdf / docx），上传即入库、永久保留，可多选：<input type="file" id="file" multiple></div>
-  </div>
+      <div id="chat">
+        <div class="welcome">
+          <h2>你好，我是面经问答助手 👋</h2>
+          <p>从大模型基础到 RAG / Agent / 工程部署，基于知识库带引用作答。试试这些问题：</p>
+          <div class="chips">
+            <button class="chip" onclick="askSuggestion(this)">上下文窗口超了怎么办？</button>
+            <button class="chip" onclick="askSuggestion(this)">Agent 死循环怎么解决？</button>
+            <button class="chip" onclick="askSuggestion(this)">为什么选 Chroma 而不是 Milvus？</button>
+            <button class="chip" onclick="askSuggestion(this)">字节 AI 工程师面试考什么？</button>
+          </div>
+        </div>
+      </div>
 
-  <div class="box">
-    <textarea id="q" placeholder="例如：上下文窗口超了怎么办？"></textarea>
-    <br>
-    <button onclick="ask()">提问</button>
-  </div>
+      <div class="inputbar">
+        <div class="input-wrap">
+          <textarea id="q" placeholder="输入你的问题…" aria-label="问题输入框"></textarea>
+          <div class="input-hint">Enter 发送 · Shift+Enter 换行</div>
+        </div>
+        <button class="send" id="sendBtn" onclick="ask()" aria-label="发送">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M22 2 11 13m11-11L16 22l-5-9-9-5 20-6z"/>
+          </svg>
+          发送
+        </button>
+        <button class="ghost" onclick="clearChat()">清空</button>
+      </div>
+    </section>
 
-  <div class="box">
-    <div id="answer">等待提问…</div>
-    <div class="sources" id="sources"></div>
+    <aside class="side" aria-label="语料管理">
+      <div class="card">
+        <h3>上传语料</h3>
+        <p class="hint">md / txt / pdf / docx · 自动去重 · 永久入库</p>
+        <div class="upload-box">
+          <div>点击选择或拖入文件</div>
+          <input type="file" id="file" multiple aria-label="选择语料文件">
+        </div>
+      </div>
+      <div class="card">
+        <h3>文档管理</h3>
+        <p class="hint" id="docCount"></p>
+        <div id="docList"><div class="empty">加载中…</div></div>
+      </div>
+    </aside>
   </div>
 
   <script>
-    async function ask() {
-      const q = document.getElementById('q').value.trim();
-      if (!q) return;
-      document.getElementById('answer').textContent = '思考中…';
-      const res = await fetch('/api/ask', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: q })
-      });
-      const data = await res.json();
-      document.getElementById('answer').textContent = data.answer || '（无回答）';
-      const s = document.getElementById('sources');
+    let history = [];
+    let docNames = [];
+    let streaming = false;
+    const chat = document.getElementById('chat');
+    const sendBtn = document.getElementById('sendBtn');
+
+    function scrollBottom() { chat.scrollTop = chat.scrollHeight; }
+
+    function addMsg(role, text) {
+      const div = document.createElement('div');
+      div.className = 'msg ' + role;
+      if (role === 'assistant') {
+        div.innerHTML = '<span class="thinking"><i></i><i></i><i></i></span>';
+      } else {
+        div.textContent = text;
+      }
+      chat.appendChild(div);
+      scrollBottom();
+      return div;
+    }
+
+    function addSources(answerText, sources) {
       const cited = new Set();
-      const matches = (data.answer || '').match(/\[\d+\]/g) || [];
-      matches.forEach(t => cited.add(t.slice(1, -1)));
-      s.innerHTML = '<b>参考资料（候选池，未引用的会被模型跳过）：</b>' + (data.sources || []).map((x, i) => {
-        const n = String(i + 1);
-        const tag = cited.has(n) ? '已引用' : '未引用';
-        const cls = cited.has(n) ? 'cited' : 'uncited';
-        return `<div class="source ${cls}">[${n}] 来源：${x.source}（相似度 ${x.score}）— ${tag}</div>`;
-      }).join('');
+      ((answerText || '').match(/\[\d+\]/g) || []).forEach(t => cited.add(t.slice(1, -1)));
+      const box = document.createElement('details');
+      box.className = 'sources';
+      box.open = (sources || []).length <= 3;
+      box.innerHTML = '<summary>参考资料 ' + (sources || []).length + ' 条</summary>' +
+        (sources || []).map((x, i) => {
+          const n = String(i + 1);
+          const used = cited.has(n);
+          return '<div class="src ' + (used ? 'cited' : 'uncited') + '">' +
+                 '<b>[' + n + ']</b><span class="name">' + x.source + '</span>' +
+                 '<span class="meta">' + (used ? '✓ 已引用' : '· 未引用') + '</span></div>';
+        }).join('');
+      chat.appendChild(box);
+      scrollBottom();
+    }
+
+    async function ask(question) {
+      if (streaming) return;
+      const q = (question || document.getElementById('q').value).trim();
+      if (!q) return;
+      streaming = true;
+      sendBtn.disabled = true;
+      history.push({ role: 'user', content: q });
+      addMsg('user', q);
+      const bubble = addMsg('assistant', '');
+      let answerText = '';
+      let sources = [];
+
+      try {
+        const res = await fetch('/api/ask/stream', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question: q, history: history.slice(-6) })
+        });
+        if (!res.ok) {
+          const err = await res.json();
+          bubble.className = 'msg error';
+          bubble.textContent = '出错了：' + (err.detail || res.status);
+          history.pop();
+          streaming = false;
+          sendBtn.disabled = false;
+          return;
+        }
+        const reader = res.body.getReader();
+        const decoder = new TextDecoder();
+        let buf = '';
+        while (true) {
+          const { done, value } = await reader.read();
+          if (done) break;
+          buf += decoder.decode(value, { stream: true });
+          let idx;
+          while ((idx = buf.indexOf('\n\n')) >= 0) {
+            const raw = buf.slice(0, idx);
+            buf = buf.slice(idx + 2);
+            const line = raw.split('\n').find(l => l.startsWith('data: '));
+            if (!line) continue;
+            const payload = line.slice(6).trim();
+            if (payload === '[DONE]') continue;
+            const data = JSON.parse(payload);
+            if (data.error) {
+              bubble.className = 'msg error';
+              bubble.textContent = data.error;
+              answerText = '';
+            } else if (data.delta) {
+              answerText += data.delta;
+              bubble.textContent = answerText;
+            } else if (data.sources) {
+              sources = data.sources;
+            }
+          }
+        }
+      } catch (e) {
+        bubble.className = 'msg error';
+        bubble.textContent = '网络错误：无法连接服务，请确认服务已启动。';
+        answerText = '';
+      }
+      if (answerText) {
+        history.push({ role: 'assistant', content: answerText });
+        addSources(answerText, sources);
+      }
+      document.getElementById('q').value = '';
+      streaming = false;
+      sendBtn.disabled = false;
+    }
+
+    function askSuggestion(btn) {
+      ask(btn.textContent.trim());
+    }
+
+    function clearChat() {
+      history = [];
+      chat.innerHTML = '';
+      addMsg('assistant', '对话已清空，随时可以继续提问。');
+    }
+
+    async function loadDocs() {
+      try {
+        const res = await fetch('/api/documents');
+        const data = await res.json();
+        document.getElementById('status').textContent = data.total_chunks + ' 块';
+        document.getElementById('docCount').textContent = data.documents.length + ' 份文档 · ' + data.total_chunks + ' 块';
+        docNames = data.documents.map(d => d.name);
+        const list = document.getElementById('docList');
+        if (!docNames.length) {
+          list.innerHTML = '<div class="empty">暂无文档，上传后自动入库</div>';
+          return;
+        }
+        list.innerHTML = data.documents.map((d, i) =>
+          '<div class="docrow"><span class="name" title="' + d.name + '">' + d.name + '</span>' +
+          '<span class="badge">' + d.chunks + '</span>' +
+          '<button class="del" onclick="delDoc(' + i + ')" aria-label="删除 ' + d.name + '">删除</button></div>'
+        ).join('');
+      } catch (e) {
+        document.getElementById('status').textContent = '加载失败';
+        document.getElementById('docCount').textContent = '';
+      }
+    }
+
+    async function delDoc(i) {
+      if (!confirm('确定删除「' + docNames[i] + '」及其全部知识块？')) return;
+      await fetch('/api/documents?file=' + encodeURIComponent(docNames[i]), { method: 'DELETE' });
+      loadDocs();
     }
 
     document.getElementById('file').addEventListener('change', async (e) => {
       for (const f of e.target.files) {
         const fd = new FormData();
         fd.append('file', f);
-        await fetch('/api/documents', { method: 'POST', body: fd });
+        const res = await fetch('/api/documents', { method: 'POST', body: fd });
+        const data = await res.json();
+        if (data.skipped) alert('「' + data.file + '」内容已入库过，跳过重复');
       }
-      alert('上传入库完成，可以提问了');
+      e.target.value = '';
+      loadDocs();
     });
+
+    document.getElementById('q').addEventListener('keydown', e => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        ask();
+      }
+    });
+
+    loadDocs();
   </script>
 </body>
 </html>

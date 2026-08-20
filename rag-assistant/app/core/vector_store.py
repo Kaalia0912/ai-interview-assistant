@@ -73,3 +73,30 @@ def query(query_text: str, top_k: int = 10, threshold: float = 0.3) -> list[dict
 
 def count() -> int:
     return _get_collection().count()
+
+
+def all_documents() -> list[tuple[str, str]]:
+    """返回全部 (文本, 来源) 对，用于混合检索索引和来源统计。"""
+    res = _get_collection().get(include=["documents", "metadatas"])
+    out = []
+    for doc, meta in zip(res["documents"] or [], res["metadatas"] or []):
+        out.append((doc, (meta or {}).get("source", "未知")))
+    return out
+
+
+def get_sources() -> dict[str, int]:
+    """统计每个来源文件的块数。"""
+    counts: dict[str, int] = {}
+    for _, src in all_documents():
+        counts[src] = counts.get(src, 0) + 1
+    return counts
+
+
+def delete_by_source(source: str) -> int:
+    """删除某个来源文件的所有块，返回删除数量。"""
+    col = _get_collection()
+    res = col.get(where={"source": source}, include=[])
+    ids = res["ids"]
+    if ids:
+        col.delete(ids=ids)
+    return len(ids)
