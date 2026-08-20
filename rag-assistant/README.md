@@ -11,7 +11,7 @@
 - **答案可核验**：仅基于检索片段生成，答案标注引用编号，可点回原文
 - **流式对话**：SSE 打字机输出，支持最近 6 轮多轮追问
 - **文档自助管理**：网页上传（md / txt / pdf / docx）、列表、删除，按 SHA-256 去重
-- **工程化**：缓存降延迟省 token、结构化日志、友好错误提示、12 项自动化测试、30 题评估 30/30
+- **工程化**：缓存降延迟省 token、结构化日志、友好错误提示、21 项自动化测试、30 题评估 30/30
 - **低门槛部署**：本地一条命令启动，也支持 Docker / 云服务器
 
 ## 技术栈
@@ -114,7 +114,7 @@ docker compose exec rag-assistant python scripts/ingest_cli.py --reset data/mian
 ## 测试
 
 ```bash
-python -m pytest tests -q   # 12 项，检索与生成打桩，离线可跑
+python -m pytest tests -q   # 21 项，检索与生成打桩，离线可跑
 ```
 
 GitHub Actions 每次 push 会自动跑一遍（见仓库根目录 `.github/workflows/tests.yml`）。
@@ -125,23 +125,29 @@ GitHub Actions 每次 push 会自动跑一遍（见仓库根目录 `.github/work
 rag-assistant/
 ├── app/
 │   ├── main.py              # FastAPI 入口
-│   ├── config.py            # 配置（读取 .env）
 │   ├── api/
-│   │   ├── ask.py           # 问答接口 POST /api/ask
-│   │   └── ingest.py        # 上传入库接口 POST /api/documents
+│   │   ├── ask.py           # 问答接口 POST /api/ask（含流式）
+│   │   └── ingest.py        # 上传 / 列表 / 删除接口
 │   ├── core/
-│   │   ├── loader.py        # 文档加载 + 清洗
-│   │   ├── chunker.py       # 分块
-│   │   ├── embedder.py      # embedding 封装
+│   │   ├── loader.py        # 文档加载 + 规则清洗（去网页噪音）
+│   │   ├── chunker.py       # 按标题分块
+│   │   ├── embedder.py      # embedding 封装（bge-m3 / text-embedding-v3）
 │   │   ├── vector_store.py  # Chroma 封装
-│   │   ├── retriever.py     # 检索（含混合检索）
+│   │   ├── hybrid.py        # 向量 + BM25 混合检索
+│   │   ├── reranker.py      # bge-reranker 重排（失败自动降级）
+│   │   ├── query_rewriter.py # 模糊问题 LLM 改写
+│   │   ├── structurer.py    # 生语料 LLM 结构化
+│   │   ├── cache.py         # 1 小时 TTL 缓存
 │   │   ├── generator.py     # Prompt 组装 + LLM 调用 + 引用校验
-│   │   └── ingester.py      # 入库流程编排
+│   │   ├── ingester.py      # 入库流程编排
+│   │   ├── config.py        # 配置（读取 .env）
+│   │   └── logger.py        # 日志
 │   └── static/index.html    # 问答 + 上传页面
-├── scripts/ingest_cli.py    # 命令行批量入库
+├── scripts/ingest_cli.py    # 命令行批量入库（--reset / --no-structure）
 ├── data/                    # 面经文档 + Chroma 数据（不提交 GitHub）
-├── tests/eval_questions.jsonl  # 30 道测试问题（评估用）
-├── docs/architecture.md     # 架构与设计决策
+├── examples/                # 可公开的示例语料
+├── tests/                   # 21 项自动化测试 + 30 题评估脚本
+├── docs/                    # 使用手册 / 语料指南 / 架构设计
 ├── requirements.txt
 └── .env.example
 ```

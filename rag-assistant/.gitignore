@@ -6,3 +6,5 @@ __pycache__/
 .pytest_cache/
 *.pyc
 .DS_Store
+tests/eval_report.md
+tests/eval_results*.jsonl
