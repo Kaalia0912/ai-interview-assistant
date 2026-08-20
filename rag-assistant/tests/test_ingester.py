@@ -32,6 +32,7 @@ def test_ingest_dedup(tmp_path, monkeypatch):
     data_dir.mkdir(parents=True)
     monkeypatch.setattr(ingester.config, "DATA_DIR", data_dir)
     monkeypatch.setattr(ingester, "_index_path", lambda: tmp_path / "indexed_files.json")
+    monkeypatch.setattr(ingester.structurer, "structure_text", lambda text, source: None)
 
     added = []
     monkeypatch.setattr(
