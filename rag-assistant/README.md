@@ -13,6 +13,8 @@
 5. 入库：`python scripts/ingest_cli.py data/mianjing`
 6. 启动服务：`python -m uvicorn app.main:app --reload`，浏览器打开 http://127.0.0.1:8000
 
+没有自己的语料时，可先用 `examples/` 里的示例语料体验（见 examples/README.md）。
+
 ## 功能
 
 - 问答：检索 + rerank + DeepSeek 生成，答案带引用（已引用 / 未引用标注）
@@ -89,7 +91,7 @@ rag-assistant/
 
 优化历程：纯向量检索版 24/30 合格 → 加入「按标题分块 + bge-reranker 重排 + 项目复盘语料」后 30/30 命中并带引用。
 
-明细见 `tests/eval_results.jsonl`，评估脚本 `tests/run_eval.py` 可随时重跑。
+最新成绩表见 `tests/eval_report.md`（运行 `python tests/run_eval.py` 自动生成），明细见 `tests/eval_results.jsonl`。
 
 ## 数据合规
 
