@@ -1,0 +1,30 @@
+{"id": 1, "category": "大模型基础", "question": "token 是什么？中文和英文的计费差异？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 2, "category": "大模型基础", "question": "temperature 和 top_p 的作用？事实问答该设多少？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 3, "category": "大模型基础", "question": "对话超过上下文窗口怎么办？给出至少两种方案", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 4, "category": "大模型基础", "question": "大模型幻觉是什么？在 RAG 场景下怎么缓解？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 5, "category": "大模型基础", "question": "system / user / assistant / tool 四种消息角色分别做什么？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 6, "category": "RAG", "question": "完整画出 RAG 离线入库和在线问答两条流程", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 7, "category": "RAG", "question": "为什么要分块？chunk size 和 overlap 怎么定？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 8, "category": "RAG", "question": "embedding 是什么？余弦相似度怎么算？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 9, "category": "RAG", "question": "向量数据库怎么选型？HNSW 是什么？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 10, "category": "RAG", "question": "检索结果不好，从哪几个环节排查优化？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 11, "category": "RAG", "question": "重排（rerank）是干什么的？直接取 top-3 有什么问题？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 12, "category": "RAG", "question": "RAG 和模型微调怎么选？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 13, "category": "RAG", "question": "怎么证明你的 RAG 有效（召回率 / 忠实度 / 引用准确率）？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 14, "category": "Agent", "question": "Agent 是什么？和普通聊天机器人的区别？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 15, "category": "Agent", "question": "工具调用（function calling）的完整流程？谁负责执行工具？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 16, "category": "Agent", "question": "ReAct 是什么？规划方式还有哪些（Plan-and-Execute / 反思）？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 17, "category": "Agent", "question": "Agent 死循环或上下文爆炸怎么办？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 18, "category": "Agent", "question": "哪些操作必须人工审批？权限和沙盒怎么做？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 19, "category": "工程", "question": "FastAPI 的请求生命周期？鉴权和错误处理怎么做？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 20, "category": "工程", "question": "大模型流式输出前后端怎么实现（SSE）？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 21, "category": "工程", "question": "Docker 镜像和容器区别？Dockerfile 常用指令有哪些？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 22, "category": "工程", "question": "服务部署后挂了，按什么顺序排查？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 23, "category": "工程", "question": "API key 怎么管理？泄露了怎么办？API 成本怎么控制？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 24, "category": "项目", "question": "你 RAG 项目里最难解决的问题是什么？怎么解决的？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 25, "category": "项目", "question": "为什么选 Chroma / 这个 embedding / 这个分块策略？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 26, "category": "项目", "question": "怎么证明你的项目比直接问大模型有效？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 27, "category": "项目", "question": "数据量扩大 100 倍，架构怎么改？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 28, "category": "流程", "question": "某大厂 AI 应用工程师 / 大模型岗位一般几轮？流程是什么？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 29, "category": "流程", "question": "自我介绍怎么组织？项目怎么用 STAR 讲？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
+{"id": 30, "category": "流程", "question": "为什么选我们公司、职业规划和反问环节怎么准备？", "retrieval_hit": null, "faithfulness": null, "citation_ok": null, "notes": ""}
